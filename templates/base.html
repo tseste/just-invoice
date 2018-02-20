@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="el">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Python Flask Invoice App</title>
+
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="../static/css/invoice.css">
+        <link rel="stylesheet" href="../static/css/bootstrap-datepicker3.min.css">
+        <link rel="stylesheet" href="../static/css/bootstrap-timepicker.min.css">
+
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="../static/js/jquery-3.2.1.min.js"></script>
+        <script src="../static/js/bootstrap-datepicker.min.js"></script>
+        <script src="../static/js/bootstrap-timepicker.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script type="text/javascript">
+            $( window ).on( "load", function(){
+                    if (window.location.pathname == "/") {
+                        $("#home_url").addClass('active');
+                    }
+                    else if (window.location.pathname == "/invoice") {
+                        $("#invoice_url").addClass('active');
+                    }
+                    else if (window.location.pathname == "/customers") {
+                        $("#customers_url").addClass('active');
+                    }
+            });
+        </script>
+        {% block extrajs %}
+        {% endblock %}
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+              <div class="container">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <span class="navbar-brand">Invoice management</span>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                  <ul class="nav navbar-nav">
+                    <li id=home_url><a href="/">Κεντρική Σελίδα</a></li>
+                    <li id=invoice_url><a href="{{ url_for('invoice') }}">Νέο Τιμολόγιο</a></li>
+                    <li id=customers_url><a href="{{ url_for('customers') }}">Εισαγωγή/Ενημέρωση</a></li>
+                    <li id=customers_url><a href="{{ url_for('customers_info') }}">Πελάτες/Προϊόντα</a></li>
+                  </ul>
+                </div>
+              </div>
+          </nav>
+        {% block mainbody %}
+        {% endblock %}
+    </body>
+</html>

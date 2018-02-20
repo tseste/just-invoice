@@ -1,0 +1,117 @@
+{% extends 'base.html'%}
+
+{% block extrajs %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#btnaddUser').click(function() {
+
+                $.ajax({
+                    url: '/add_user',
+                    data: $('form').serialize(),
+                    type: 'POST',
+                    success: function(response) {
+                        $('#db_resp').text(response)
+                    },
+                    error: function() {
+                        $('#db_resp').text('Η εισαγωγή απέτυχε ελέξτε για διπλοεγραφές με άλλους πελάτες')
+                    }
+                });
+            });
+            $('#btnaddProduct').click(function() {
+
+                $.ajax({
+                    url: '/add_product',
+                    data: $('form').serialize(),
+                    type: 'POST',
+                    success: function(response) {
+                        $('#db_resp').text(response)
+                    },
+                    error: function() {
+                        $('#db_resp').text('Η εισαγωγή απέτυχε ελέξτε για διπλοεγραφές με άλλο προϊον')
+                    }
+                });
+            });
+            $('#customer_name').blur(function() {
+                $.ajax({
+                    url: '/select_user',
+                    data:$('#customer_name').serialize(),
+                    type: 'POST',
+                    success: function(response) {
+                        console.log(response);
+                        $('#customer_name').val(response.customer_name);
+                        $('#customer_job').val(response.customer_job);
+                        $('#customer_afm').val(response.customer_afm);
+                        $('#customer_mail').val(response.customer_mail);
+                        $('#customer_doy').val(response.customer_doy);
+                        $('#customer_address').val(response.customer_address);
+                    },
+                    error: function(error) {
+                        console.log(error)
+                    }
+                });
+            });
+            $('#product_name').blur(function() {
+                $.ajax({
+                    url: '/select_product',
+                    data:$('#product_name').serialize(),
+                    type: 'POST',
+                    success: function(response) {
+                        console.log(response);
+                        $('#product_name').val(response.product_name);
+                        $('#product_description').val(response.product_description);
+                        $('#product_mu').val(response.product_mu);
+                        $('#product_up').val(response.product_up);
+                    },
+                    error: function(error) {
+                        console.log(error)
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block mainbody %}
+    <div class="container" style="margin-top:100px;margin-bottom:20px;">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Εισαγωγή/Ενημέρωση Πελάτη</h1>
+                <form>
+                    <label for="customer_name" class="sr-only">Name</label>
+                    <input type="text" name="customer_name" id="customer_name" class="form-control" placeholder="ΟΝΟΜΑΤΕΠΩΝΥΜΟ" required>
+                    <label for="customer_mail" class="sr-only">ΔΙΕΥΘΥΝΣΗ ΗΛΕΚΤΡΟΝΙΚΟΥ ΤΑΧΥΔΡΟΜΙΟΥ</label>
+                    <input type="email" name="customer_mail" id="customer_mail" class="form-control" placeholder="ΔΙΕΥΘΥΝΣΗ ΗΛΕΚΤΡΟΝΙΚΟΥ ΤΑΧΥΔΡΟΜΙΟΥ" required>
+                    <label for="customer_address" class="sr-only">ΔΙΕΥΘΥΝΣΗ ΚΑΤΟΙΚΙΑΣ</label>
+                    <input type="text" name="customer_address" id="customer_address" class="form-control" placeholder="ΔΙΕΥΘΥΝΣΗ ΚΑΤΟΙΚΙΑΣ" required>
+                    <label for="customer_job" class="sr-only">ΕΠΑΓΓΕΛΜΑ</label>
+                    <input type="text" name="customer_job" id="customer_job" class="form-control" placeholder="ΕΠΑΓΓΕΛΜΑ" required>
+                    <label for="customer_afm" class="sr-only">Α.Φ.Μ.</label>
+                    <input type="text" name="customer_afm" id="customer_afm" class="form-control" placeholder="Α.Φ.Μ." required>
+                    <label for="customer_doy" class="sr-only">Δ.Ο.Υ.</label>
+                    <input type="text" name="customer_doy" id="customer_doy" class="form-control" placeholder="Δ.Ο.Υ." required>
+                    <button id="btnaddUser" class="btn btn-lg btn-primary btn-block" type="button">Εισαγωγή/Ενημέρωση</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <h1>Εισαγωγή/Ενημέρωση Προϊόντος</h1>
+                <form>
+                    <label for="product_name" class="sr-only">ΟΝΟΜΑ ΠΡΟΪΟΝΤΟΣ</label>
+                    <input type="text" name="product_name" id="product_name" class="form-control" placeholder="ΟΝΟΜΑ ΠΡΟΪΟΝΤΟΣ" required autofocus>
+                    <label for="product_mu" class="sr-only">ΜΟΝΑΔΑ ΜΕΤΡΗΣΗΣ</label>
+                    <input type="text" name="product_mu" id="product_mu" class="form-control" placeholder="ΜΟΝΑΔΑ ΜΕΤΡΗΣΗΣ" required>
+                    <label for="product_up" class="sr-only">ΚΟΣΤΟΣ ΜΟΝΑΔΑΣ</label>
+                    <input type="text" name="product_up" id="product_up" class="form-control" placeholder="ΤΙΜΗ ΜΟΝΑΔΑΣ" required>
+                    <button id="btnaddProduct" class="btn btn-lg btn-primary btn-block" type="button">Εισαγωγή/Ενημέρωση</button>
+                </form>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div id="db_resp" class="panel-heading text-center">Απάντηση βάσης δεδομένων</div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

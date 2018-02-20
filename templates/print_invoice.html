@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="el">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Python Flask Invoice App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="../static/js/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+      .row-bordered:after {
+        content: "";
+        display: block;
+        border-bottom: 1px solid #ccc;
+        margin: 0 15px;}
+      .well {
+        background: white;}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="text-center">
+              <h1><p><u><strong>ΑΦΟΙ Δ. ΒΑΓΙΑΝΟΥ & ΣΙΑ Ο.Ε.</strong></u></p></h1>
+              <h4><p><strong>ΚΕΝΤΡΙΚΟ:ΤΖΑΜΙΑ - ΚΡΥΣΤΑΛΛΑ - ΚΑΘΡΕΠΤΕΣ</strong></p></h4>
+              <h4><p>ΣΚΡΑ 4 - ΞΑΝΘΗ - ΤΗΛ.:25410 22143</p></h4>
+              <h4><p><strong>ΥΠ/ΜΑ: ΕΡΓΑΣΤΗΡΙΟ ΥΑΛΟΠΙΝΑΚΩΝ - ΚΡΥΣΤΑΛΛΩΝ - ΚΑΘΡΕΠΤΩΝ</strong></p></h4>
+              <h4><p>ΒΙΟ.ΠΕ. ΞΑΝΘΗΣ , ΤΗΛ.:25410 65188 - 87970, FAX:25410 87971</p></h4>
+              <h4><p> www.tzamia-vagianos.gr, e-mail: info@tzamia-vagianos.gr</p></h4>
+              <h4><p> Α.Φ.Μ. 091046684 - ΔΟΥ ΞΑΝΘΗΣ</p></h4>
+          </div>
+          <span><u class="pull-right" style="padding-right:30px;padding-bottom:10px;"><h4>ΣΕΙΡΑ Α'</h4></u></span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+            <div class="well well-lg">
+              <div class="text-center">
+                <h2>ΤΙΜΟΛΟΓΙΟ - ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</h2>
+                <h4>(ΓΙΑ ΠΩΛΗΣΗ ΑΓΑΘΩΝ)</h4>
+              </div>
+              <div class="row row-bordered">
+                <div class="col-sm-12">
+                  ΠΕΛΑΤΗΣ:
+                </div>
+              </div>
+              <div class="row row-bordered">
+                <div class="col-sm-8">
+                  ΕΠΑΓΓΕΛΜΑ:
+                </div>
+                <div class="col-sm-4">
+                  Α.Φ.Μ.:
+                </div>
+              </div>
+              <div class="row row-bordered">
+                <div class="col-sm-8">
+                  ΔΙΕΥΘΥΝΣΗ:
+                </div>
+                <div class="col-sm-4">
+                  Δ.Ο.Υ.:
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="well well-lg">
+            <div class="text-center">
+              <h4><u>ΤΟΠΟΣ</u></h4>
+            </div>
+            <div class="row">
+            <div class="col-sm-12">
+              <div class="row row-bordered">
+                <div class="col-sm-12">
+                  ΑΠΟΣΤΟΛΗΣ:
+                </div>
+              </div>
+              <div class="row row-bordered">
+                <div class="col-sm-12">
+                  ΠΡΟΟΡΙΣΜΟΥ:
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="well well-lg">
+            <div class="text-center">
+              <h4><u>ΩΡΑ - ΗΜΕΡΟΜΗΝΙΑ</u></h4>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="row row-bordered">
+                  <div class="col-sm-6">
+                    ΕΝΑΡΞΗΣ:
+                  </div>
+                  <div class="col-sm-6">
+                    ΠΑΡΑΔΟΣΗΣ:
+                  </div>
+                </div>
+                <div class="row row-bordered">
+                  <div class="col-sm-12">
+                    ΗΜΕΡΟΜΗΝΙΑ:
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12 column">
+          <div class="well well-lg">
+            <table class="table" id="tab_logic">
+              <thead>
+                <tr>
+                  <th class="col-sm-1 text-center">#</th>
+                  <th class="col-sm-5 text-center">ΕΙΔΟΣ ΕΜΠΟΡΕΥΜΑΤΟΣ</th>
+                  <th class="col-sm-1 text-center">Μ.Μ.</th>
+                  <th class="col-sm-1 text-center">ΠΟΣΟΤΗΤΑ</th>
+                  <th class="col-sm-1 text-center">ΤΕΜΑΧΙΑ</th>
+                  <th class="col-sm-1 text-center">ΤΙΜΗ ΜΟΝΑΔΑΣ</th>
+                  <th class="col-sm-2 text-center">ΣΥΝΟΛΑ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr id='addr0'>
+                  <td class="col-sm-1 text-center">1</td>
+                  <td class="col-sm-5 text-center"><span id="product_name0"></span></td>
+                  <td class="col-sm-1 text-center"><span id="product_mu0"></span></td>
+                  <td class="col-sm-1 text-center"><span id="quantity0"></span></td>
+                  <td class="col-sm-1 text-center"><span id="units0"></span></td>
+                  <td class="col-sm-1 text-center"><span id="product_up0"></span></td>
+                  <td class="col-sm-2 text-center"><span id="total0"></span></td>
+                </tr>
+                <tr id='addr1'></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="well well-lg">
+            <div class="row">
+              <div class="col-sm-10">
+                  <div class="text-center">
+                    <h4><u>ΠΟΣΟΤΗΤΑ ΚΑΙ ΕΥΡΩ ΟΛΟΓΡΑΦΩΣ</u></h4>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12" id="comment">
+                    </div>
+                  </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="row">
+                  <strong>ΣΥΝΟΛΟ</strong>
+                </div>
+                <div class="row row-bordered">
+                  <div class="col-sm-12 text-center" id="total">
+                    1231231.32
+                  </div>
+                </div>
+                <div class="row">
+                  <strong>Φ.Π.Α. %</strong>
+                </div>
+                <div class="row row-bordered">
+                  <div class="col-sm-12 text-center" id="fpa">
+                    24
+                  </div>
+                </div>
+                <div class="row">
+                  <strong>ΤΕΛΙΚΗ ΑΞΙΑ</strong>
+                </div>
+                <div class="row row-bordered">
+                  <div class="col-sm-12 text-center" id="invoice_total">
+                    32297.123
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+          <div class="col-sm-5">
+              <p><strong>Τραπεζικός Λογαριασμός:</strong></p>
+              <p>ΕΘΝΙΚΗ 435/440531-50</p>
+              <p>ΙΒΑΝ GR36 0110 4350 0000 4354 4053 150</p>
+          </div>
+          <div class="col-sm-4">
+              <p><strong>Ο ΠΑΡΑΔΟΥΣ</strong></p>
+          </div>
+          <div class="col-sm-3">
+              <p><strong>Ο ΠΑΡΑΛΑΒΩΝ</strong></p>
+          </div>
+      </div>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,336 @@
+{% extends 'base.html'%}
+
+{% block extrajs %}
+    <script type="text/javascript">
+        $(window).on("load", function(){
+          $.ajax({
+              url: '/customer_list',
+              data:'',
+              type: 'POST',
+              success: function(response) {
+                  $.each(response.message, function(index, customer){
+                  $("#customer_list").append('<option value="' + customer + '"></option>');
+                });
+              },
+              error: function(error) {
+                  console.log(error)
+              }
+          });
+        });
+        $(document).ready(function(){
+            var i=1;
+            $("#add_row").click(
+                function()
+                {
+                    $('#addr'+i).html(
+            			"<td class='text-center'>"+
+                        (i+1)+
+            			"</td>\
+            			<td>\
+            			<input type='name' name='product_name"+i+"' id='product_name"+i+"' onblur='fillit(this.id)' class='form-control' placeholder='ΟΝΟΜΑ ΠΡΟΪΟΝΤΟΣ'>\
+            			</td>\
+            			<td>\
+            			<input type='text' name='product_mu"+i+"' id='product_mu"+i+"' class='form-control' placeholder='ΜΟΝΑΔΑ ΜΕΤΡΗΣΗΣ'>\
+            			</td>\
+            			<td>\
+            			<input type='text' name='quantity"+i+"' id='quantity"+i+"' onchange='calcit(this.id)' placeholder='ΠΟΣΟΤΗΤΑ' class='form-control'/>\
+            			</td>\
+                  <td>\
+                  <input type='text' name='units0' id='units0' placeholder='ΤΕΜΑΧΙΑ' class='form-control'/>\
+                  </td>\
+            			<td>\
+            			<input type='text' name='product_up"+i+"' id='product_up"+i+"' class='form-control' placeholder='ΤΙΜΗ ΜΟΝΑΔΑΣ'>\
+            			</td>\
+            			<td>\
+            			<input type='text' name='total"+i+"' id='total"+i+"' placeholder='ΣΥΝΟΛΑ' class='form-control'/>\
+            			</td>\
+            		    </tr>"
+                    );
+            $('#tab_logic').append('<tr id="addr'+(i+1)+'"></tr>');
+                i++;
+            });
+
+            $("#delete_row").click(
+                function()
+                {
+            	    if(i>1)
+                    {
+        		        $("#addr"+(i-1)).html('');
+        		        i--;
+        		    }
+        	    }
+            );
+            $('#datepicker').datepicker({format: "dd/mm/yyyy",
+                                         autoclose: true,
+                                     }).datepicker("setDate", new Date());
+            $('#time_arrive').timepicker();
+            $('#time_depart').timepicker();
+            $('#customer_name').blur(function() {
+                $.ajax({
+                    url: '/select_user',
+                    data:$('#customer_name').serialize(),
+                    type: 'POST',
+                    success: function(response) {
+                        console.log(response);
+                        $('#customer_name').val(response.customer_name);
+                        $('#customer_job').val(response.customer_job);
+                        $('#customer_afm').val(response.customer_afm);
+                        $('#customer_doy').val(response.customer_doy);
+                        $('#customer_address').val(response.customer_address);
+                    },
+                    error: function(error) {
+                        console.log(error)
+                    }
+                });
+            });
+
+            fillit = function (pid){
+                var pidnum = pid.slice(-1)
+                $.ajax({
+                    url: '/select_product',
+                    data:$('#product_name'+pidnum).serialize(),
+                    type: 'POST',
+                    success: function(response) {
+                        console.log(response);
+                        $('#product_name'+pidnum).val(response.product_name);
+                        $('#product_mu'+pidnum).val(response.product_mu);
+                        $('#quantity'+pidnum).val(1);
+                        $('#product_up'+pidnum).val(response.product_up);
+                        $('#total'+pidnum).val(response.product_up);
+                    },
+                    error: function(error) {
+                        console.log(error)
+                    }
+                });
+            };
+
+            calcit = function (qid)
+            {
+                var q = parseFloat($('#'+qid).val());
+                var qidnum = qid.slice(-1)
+                var t = q*parseFloat($('#product_up'+qidnum).val())
+                $('#total'+qidnum).val(t);
+
+            };
+
+            totalit = function (tid)
+            {
+                var bt = 0
+                for (j=0;j<i;j++)
+                {
+                    bt += parseFloat($('#total'+j).val());
+                }
+                $('#'+tid).val(bt);
+            };
+
+            fpait = function (fid)
+            {
+                var st = parseFloat($('#total').val()) + parseFloat($('#total').val())*parseFloat($('#'+fid).val())/100
+                $('#invoice_total').val(st.toFixed(2));
+            };
+    });
+    </script>
+{% endblock %}
+
+{% block mainbody %}
+        <div class="container" style="margin-top:100px;margin-bottom:20px;background-color:white;">
+            <div class="row">
+                <div class="col-md-12 invoice_form">
+                    <div class="text-center">
+                        <p><u><strong>ΑΦΟΙ Δ. ΒΑΓΙΑΝΟΥ & ΣΙΑ Ο.Ε.</strong></u></p>
+                        <p><strong>ΚΕΝΤΡΙΚΟ:ΤΖΑΜΙΑ - ΚΡΥΣΤΑΛΛΑ - ΚΑΘΡΕΠΤΕΣ</strong></p>
+                        <p>ΣΚΡΑ 4 - ΞΑΝΘΗ - ΤΗΛ.:25410 22143</p>
+                        <p><strong>ΥΠ/ΜΑ: ΕΡΓΑΣΤΗΡΙΟ ΥΑΛΟΠΙΝΑΚΩΝ - ΚΡΥΣΤΑΛΛΩΝ - ΚΑΘΡΕΠΤΩΝ</strong></p>
+                        <p>ΒΙΟ.ΠΕ. ΞΑΝΘΗΣ , ΤΗΛ.:25410 65188 - 87970, FAX:25410 87971</p>
+                        <p> www.tzamia-vagianos.gr, e-mail: info@tzamia-vagianos.gr</p>
+                        <p> Α.Φ.Μ. 091046684 - ΔΟΥ ΞΑΝΘΗΣ</p>
+                    </div>
+                    <form action="/print_invoice" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-center">
+                                        ΤΙΜΟΛΟΓΙΟ - ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="customer_name">ΠΕΛΑΤΗΣ</label>
+                                                    <input type="text" name="customer_name" id="customer_name" class="form-control" placeholder="ΟΝΟΜΑΤΕΠΩΝΥΜΟ" list="customer_list" required>
+                                                        <datalist id="customer_list">
+                                                        </datalist>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <label for="customer_job">ΕΠΑΓΓΕΛΜΑ</label>
+                                                    <input type="text" name="customer_job" id="customer_job" class="form-control" placeholder="ΕΠΑΓΓΕΛΜΑ" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="customer_afm">ΑΦΜ</label>
+                                                    <input type="text" name="customer_afm" id="customer_afm" class="form-control" placeholder="Α.Φ.Μ." required>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <label for="customer_address">ΔΙΕΥΘΥΝΣΗ</label>
+                                                    <input type="text" name="customer_address" id="customer_address" class="form-control" placeholder="ΔΙΕΥΘΥΝΣΗ ΚΑΤΟΙΚΙΑΣ" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="customer_doy">ΔΟΥ</label>
+                                                    <input type="text" name="customer_doy" id="customer_doy" class="form-control" placeholder="Δ.Ο.Υ." required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-center">
+                                        ΤΟΠΟΣ
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="place_shipping">ΑΠΟΣΤΟΛΗΣ</label>
+                                                    <input type="text" class="form-control" id="place_shipping" placeholder="ΜΕΡΟΣ ΑΠΟΣΤΟΛΗΣ">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="place_destination">ΠΡΟΟΡΙΣΜΟΥ</label>
+                                                    <input type="text" class="form-control" id="place_destination" placeholder="ΜΕΡΟΣ ΠΡΟΟΡΙΣΜΟΥ">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-center">
+                                        ΩΡΑ - ΗΜΕΡΟΜΗΝΙΑ
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="time_depart">ΕΝΑΡΞΗΣ</label>
+                                                    <div class="input-group bootstrap-timepicker timepicker">
+                                                        <input id="time_depart" type="text" class="form-control input-small">
+                                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="time_arrive">ΠΑΡΑΔΟΣΗΣ</label>
+                                                    <div class="input-group bootstrap-timepicker timepicker">
+                                                        <input id="time_arrive" type="text" class="form-control input-small">
+                                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="datepicker">ΗΜΕΡΟΜΗΝΙΑ</label>
+                                                    <div id=datepicker class="input-group date" data-provide="datepicker">
+                                                        <input id="this_date" type="text" class="form-control">
+                                                        <div class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-th"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      <div class="row">
+                    		<div class="col-md-12 column">
+                    			<table class="table table-bordered table-hover" id="tab_logic">
+                            <thead>
+                              <tr>
+                                <th class="col-md-1 text-center">#</th>
+                                <th class="col-md-5 text-center">ΕΙΔΟΣ ΕΜΠΟΡΕΥΜΑΤΟΣ</th>
+                                <th class="col-md-1 text-center">Μ.Μ.</th>
+                                <th class="col-md-1 text-center">ΠΟΣΟΤΗΤΑ</th>
+                                <th class="col-md-1 text-center">ΤΕΜΑΧΙΑ</th>
+                                <th class="col-md-1 text-center">ΤΙΜΗ ΜΟΝΑΔΑΣ</th>
+                                <th class="col-md-2 text-center">ΣΥΝΟΛΑ</th>
+                              </tr>
+                            </thead>
+                    				<tbody>
+                    					<tr id='addr0'>
+                    						<td class="text-center">1</td>
+                    						<td><input type="text" name="product_name0" id="product_name0" class="form-control" onblur="fillit(this.id)" placeholder="ΟΝΟΜΑ ΠΡΟΪΟΝΤΟΣ"></td>
+                    						<td><input type="text" name="product_mu0" id="product_mu0" class="form-control" placeholder="ΜΟΝΑΔΑ ΜΕΤΡΗΣΗΣ"></td>
+                    						<td><input type="text" name='quantity0' id='quantity0' placeholder='ΠΟΣΟΤΗΤΑ' onchange="calcit(this.id)" class="form-control"/></td>
+                    						<td><input type="text" name='units0' id='units0' placeholder='ΤΕΜΑΧΙΑ' class="form-control"/></td>
+                    						<td><input type="text" name="product_up0" id="product_up0" class="form-control" placeholder="ΤΙΜΗ ΜΟΝΑΔΑΣ"></td>
+                    						<td><input type="text" name='total0' id='total0' placeholder='ΣΥΝΟΛΑ' class="form-control"/></td>
+                    					</tr>
+                              <tr id='addr1'></tr>
+                    				</tbody>
+                    			</table>
+                            <a id="add_row" class="btn btn-default pull-left">Add Row</a><a id='delete_row' class="pull-right btn btn-default">Delete Row</a>
+                    		</div>
+                    	</div>
+                    <br>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <div class="form-group">
+                                                        <label for="comment">ΠΟΣΟΤΗΤΑ ΚΑΙ ΕΥΡΩ ΟΛΟΓΡΑΦΩΣ</label>
+                                                        <textarea class="form-control" rows="7" id="comment"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <label for="total">ΣΥΝΟΛΟ</label>
+                                                            <input type="text" class="form-control" id="total" onclick="totalit(this.id)" placeholder="ΣΥΝΟΛΟ">
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <label for="fpa">ΦΠΑ %</label>
+                                                            <input type="text" class="form-control" id="fpa" onblur="fpait(this.id)" placeholder="ΦΠΑ">
+                                                        </div>
+                                                            <div class="col-md-12">
+                                                                <label for="invoice_total">ΤΕΛΙΚΗ ΑΞΙΑ</label>
+                                                                <input type="text" class="form-control" id="invoice_total" placeholder="ΤΕΛΙΚΗ ΑΞΙΑ">
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Τραπεζικός Λογαριασμός:</strong></p>
+                                <p>ΕΘΝΙΚΗ 435/440531-50</p>
+                                <p>ΙΒΑΝ GR36 0110 4350 0000 4354 4053 150</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p><strong>Ο ΠΑΡΑΔΟΥΣ</strong></p>
+                            </div>
+                            <div class="col-md-3">
+                                <p><strong>Ο ΠΑΡΑΛΑΒΩΝ</strong></p>
+                            </div>
+                        </div>
+                          <button type="submit" class="btn btn-success pull-right" style="margin-bottom:10pt;">Εκτύπωση</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'base.html'%}
+
+{% block extrajs %}
+    <script type="text/javascript">
+            $(window).on("load", function() {
+                $.ajax({
+                    url: '/fetch_users',
+                    data: '',
+                    type: 'POST',
+                    success: function(response) {
+                            for (i=0;i<response.length;i++)
+                            {
+                                $('#customers').append(
+                                    "<tr>\
+                                        <th scope='row'>"+(i+1)+"</th>\
+                                            <td>"+response[i].customer_name+"</td>\
+                                            <td>"+response[i].customer_mail+"</td>\
+                                            <td>"+response[i].customer_job+"</td>\
+                                            <td>"+response[i].customer_afm+"</td>\
+                                            <td>"+response[i].customer_doy+"</td>\
+                                            <td>"+response[i].customer_address+"</td>\
+                                    </tr>"
+                                );
+                            }
+                    },
+                    error: function(error) {
+                        console.log(error)
+                    }
+                });
+                $.ajax({
+                    url: '/fetch_products',
+                    data: '',
+                    type: 'POST',
+                    success: function(response) {
+                            for (i=0;i<response.length;i++)
+                            {
+                                $('#products').append(
+                                    "<tr>\
+                                        <th scope='row'>"+(i+1)+"</th>\
+                                            <td>"+response[i].product_name+"</td>\
+                                            <td>"+response[i].product_mu+"</td>\
+                                            <td>"+response[i].product_up+"</td>\
+                                    </tr>"
+                                );
+                            }
+                    },
+                    error: function(error) {
+                        console.log(error)
+                    }
+                });
+            });
+    </script>
+{% endblock %}
+
+{% block mainbody %}
+    <div class="container" style="margin-top:100px;margin-bottom:20px;">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Πελατολόγιο</h1>
+                <table class="table table-bordered table-striped well" id="customers">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Όνομα</th>
+                            <th>Ηλ.Ταχυδρομίο</th>
+                            <th>Επάγγελμα</th>
+                            <th>Α.Φ.Μ.</th>
+                            <th>Δ.Ο.Υ.</th>
+                            <th>Διεύθυνση</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </br>
+            </br>
+                <table class="table table-bordered table-striped well" id="products">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Όνομα</th>
+                            <th>Μ.Μ.</th>
+                            <th>Τιμή</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
