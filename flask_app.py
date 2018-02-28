@@ -1,5 +1,5 @@
 """Application routes."""
-from flask import Flask, request, json, render_template, Response
+from flask import Flask, request, json, render_template, redirect, url_for
 from flask_mysqldb import MySQLdb
 
 
@@ -10,13 +10,15 @@ credentials = {
     'host': '',
     'user': '',
     'passwd': '',
-    'port': ,
+    'port': 3306,
     'db': '',
     'use_unicode': True,
     'charset': 'utf8'
 }
 mysql = MySQLdb.connect(**credentials)
 
+
+# Navigation
 
 @app.route("/", methods=['GET'])
 def index():
@@ -26,115 +28,162 @@ def index():
 
 @app.route("/invoice", methods=['GET'])
 def invoice():
-    """Invoice fill."""
+    """Create invoice."""
     return render_template('invoice.html')
 
 
-@app.route("/print_invoice", methods=['GET', 'POST'])
-def print_invoice():
-    """Invoice print."""
-    data = request.form
-    print(data)
-    return render_template('print_invoice.html')
+@app.route("/customer", methods=['GET'])
+def customer():
+    """Create or update a customer."""
+    return render_template('customer.html')
 
 
-@app.route("/customers", methods=['GET'])
-def customers():
-    """Customers list."""
-    return render_template('customers.html')
+@app.route("/product", methods=['GET'])
+def product():
+    """Create or update a product."""
+    return render_template('product.html')
 
+
+@app.route("/search", methods=['GET'])
+def search():
+    """Create or update a product."""
+    return render_template('search.html')
+
+
+# --------------------------------------------------------------------------- #
+
+# Customer related routes
 
 @app.route("/customer_list", methods=['POST'])
 def customer_list():
     """Fetch all customers SQL query."""
     cursor = mysql.cursor()
-    cursor.execute("select customer_name from Customer")
+    cursor.execute("select FirstName, LastName, TRN from Customer")
+    data = cursor.fetchall()
+    return json.jsonify({'message': data})
+
+
+@app.route('/add_customer', methods=['POST'])
+def add_customer():
+    """Call procedure to create or update a customer's info."""
+    cursor = mysql.cursor()
+    FirstName = request.form['FirstName']
+    LastName = request.form['LastName']
+    Company = request.form['Company']
+    Address = request.form['Address']
+    City = request.form['City']
+    Country = request.form['Country']
+    PostalCode = request.form['PostalCode']
+    Phone = request.form['Phone']
+    Fax = request.form['Fax']
+    Email = request.form['Email']
+    TRN = request.form['TRN']
+    TaxOffice = request.form['TaxOffice']
+
+    cursor.callproc('sp_Customer', (FirstName, LastName, Company, Address,
+                                    City, Country, PostalCode, Phone, Fax,
+                                    Email, TRN, TaxOffice))
+    return redirect(url_for('customer'))
+
+
+@app.route('/select_customer', methods=['POST'])
+def select_customer():
+    """Select customers from customer_name."""
+    cursor = mysql.cursor(MySQLdb.cursors.DictCursor)
+    TRN = request.form['TRN']
+    cursor.execute("""SELECT *
+                      FROM Customer
+                      WHERE TRN LIKE '{}'""".format(TRN))
+    data = cursor.fetchone()
+    return json.jsonify(data)
+
+
+# --------------------------------------------------------------------------- #
+
+# Product related routes
+
+@app.route("/product_list", methods=['POST'])
+def product_list():
+    """Fetch all products SQL query."""
+    cursor = mysql.cursor()
+    cursor.execute("select Name from Product")
     data = cursor.fetchall()
     data = [item[0] for item in data]
     return json.jsonify({'message': data})
 
 
-@app.route("/customers_info", methods=['GET'])
-def customers_info():
-    return render_template('customers_info_table.html')
-
-
-@app.route('/add_user', methods=['POST'])
-def add_user():
+@app.route("/product_types_list", methods=['POST'])
+def product_types_list():
+    """Fetch all product types SQL query."""
     cursor = mysql.cursor()
-    customer_name = request.form['customer_name']
-    customer_mail = request.form['customer_mail']
-    customer_address = request.form['customer_address']
-    customer_job = request.form['customer_job']
-    customer_afm = request.form['customer_afm']
-    customer_doy = request.form['customer_doy']
-    cursor.callproc('sp_createUser', (customer_name, customer_mail,
-                                      customer_address, customer_job,
-                                      customer_afm, customer_doy))
+    cursor.execute("select UnitTypeId, Name from ProductUnitType")
     data = cursor.fetchall()
-
-    if len(data) is 0:
-        mysql.commit()
-        return 'Επιτυχής Εισαγωγή'
-    else:
-        return ('Το ιδιο Ονοματεπώνυμο και ο αριθμος Α.Φ.Μ. '
-                'δεν μπορουν να υπαρχουν σε δευτερο πελάτη')
-
-
-@app.route('/select_user', methods=['POST'])
-def select_user():
-    cursor = mysql.cursor(MySQLdb.cursors.DictCursor)
-    customer_name = request.form['customer_name']
-    cursor.execute("select * from Customer where customer_name LIKE '{}'".format(customer_name))
-    data = cursor.fetchone()
-    return json.jsonify(data)
-
-
-@app.route('/fetch_users', methods=['POST'])
-def fetch_users():
-    cursor = mysql.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("select * from Customer")
-    data = cursor.fetchall()
-    return Response(response=json.dumps(data),
-                    status=200,
-                    mimetype='application/json')
+    return json.jsonify({'message': data})
 
 
 @app.route('/add_product', methods=['POST'])
 def add_product():
+    """Call procedure to create or update a product's info."""
     cursor = mysql.cursor()
-    product_name = request.form['product_name']
-    product_mu = request.form['product_mu']
-    product_up = request.form['product_up']
-    cursor.callproc('sp_createProduct', (product_name,
-                                         product_mu, product_up))
-    data = cursor.fetchall()
+    Name = request.form['Name']
+    Description = request.form['Description']
+    UnitTypeId = request.form['UnitTypeId']
+    UnitPrice = request.form['UnitPrice']
+    cursor.callproc('sp_Product', (Name, Description, UnitTypeId,
+                                   UnitPrice))
+    mysql.commit()
+    return redirect(url_for('product'))
 
+
+@app.route("/unittype", methods=['GET'])
+def unittype():
+    """Create a new product unit type."""
+    return render_template('unittype.html')
+
+
+@app.route('/new_unittype', methods=['POST'])
+def new_unittype():
+    """Add new unit type."""
+    cursor = mysql.cursor()
+    Name = request.form['Name']
+    cursor.execute("""SELECT Name
+                      FROM ProductUnitType
+                      WHERE Name LIKE '{}'""".format(Name))
+    data = cursor.fetchall()
     if len(data) is 0:
+        cursor.execute("""INSERT INTO ProductUnitType (Name)
+                          VALUES ('{}')""".format(Name))
         mysql.commit()
-        return 'Επιτυχής Εισαγωγή'
-    else:
-        return 'Αποτυχία Εισαγωγής Προϊόντος'
+    return redirect(url_for('unittype'))
 
 
 @app.route('/select_product', methods=['POST'])
 def select_product():
+    """Select products from product_name."""
     cursor = mysql.cursor(MySQLdb.cursors.DictCursor)
-    product_name = next(request.form.values())
-    cursor.execute("select * from Product where product_name LIKE '{}'".format(product_name))
-    data = cursor.fetchone()
+    Name = request.form['Name']
+    try:
+        cursor.execute(r"""SELECT *
+                           FROM Product
+                           WHERE Name LIKE '{}'""".format(Name))
+        data = cursor.fetchone()
+        data['UnitPrice'] = '{0:f}'.format(data['UnitPrice'])
+        return json.jsonify(data)
+    except Exception as e:
+        print(e)
+        return json.jsonify({'Name': Name})
+
+
+# --------------------------------------------------------------------------- #
+
+# Final Invoice
+
+@app.route("/print_invoice", methods=['GET', 'POST'])
+def print_invoice():
+    """Print invoice."""
+    data = request.form
     print(data)
-    return json.jsonify(data)
-
-
-@app.route('/fetch_products', methods=['POST'])
-def fetch_products():
-    cursor = mysql.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("select * from Product")
-    data = cursor.fetchall()
-    return Response(response=json.dumps(data),
-                    status=200,
-                    mimetype='application/json')
+    return render_template('print_invoice.html')
 
 
 if __name__ == '__main__':
