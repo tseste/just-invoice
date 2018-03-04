@@ -1,7 +1,8 @@
 {% extends 'base.html'%}
+{% from "_baseformhelper.html" import render_field %}
 
 {% block extrajs %}
-    <script src="../static/js/product.js"></script>
+    <script src="{{ url_for('static', filename='js/product.js') }}"></script>
 {% endblock %}
 
 {% block mainbody %}
@@ -9,27 +10,36 @@
         <div class="row justify-content-center">
             <div class="col-8">
                 <h1>Εισαγωγή/Ενημέρωση Προϊόντος</h1>
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    {% for message in messages %}
+                      <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>{{ message }}</strong> One more Product.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
                 <hr/>
-                <form action="{{ url_for('add_product') }}" method="post">
+                <form action="{{ url_for('product') }}" method="post">
                   <div class="form-group">
-                    <label for="Name">Όνομα Προϊόντος</label>
-                    <input type="text" name="Name" id="Name" class="form-control" list="product_list"  autocomplete="off" required>
-                    <datalist id="product_list">
-                    </datalist>
-                    <label for="Description">Περιγραφή Προϊόντος</label>
-                    <textarea name="Description" id="Description" class="form-control" rows="3" cols="1"></textarea>
-                    <label for="UnitTypeId">Μονάδα Μέτρησης</label>
+                    {{ form.csrf_token }}
+                    {{ form.Name.label }}
+                    {{ form.Name(class="form-control", list="product_list", autocomplete="off")}}
+                    <datalist id="product_list"></datalist>
+                    {{ render_field(form.Description) }}
+                    {{ form.UnitTypeId.label }}
                     <div class="row">
                       <div class="col-11">
-                        <select name="UnitTypeId" id="UnitTypeId" class="form-control custom-select" required>
-                        </select>
+                      {{ form.UnitTypeId(class="form-control custom-select") }}
                       </div>
                       <div class="col-1">
-                        <a href="{{ url_for('unittype') }}" target="_blank" title="Είσαγωγή Νέας Μονάδας Μέτρησης"><i class="fas fa-edit"></i></a>
+                        <a href="{{ url_for('unittype') }}" target="_blank" title="Είσαγωγή Νέας Μονάδας Μέτρησης"><i class="fas fa-edit fa-2x"></i></a>
                       </div>
                     </div>
-                    <label for="UnitPrice">Τιμή</label>
-                    <input type="text" name="UnitPrice" id="UnitPrice" class="form-control" required>
+                    {{ render_field(form.UnitPrice) }}
                     <hr/>
                     <button id="btnaddProduct" class="btn btn-lg btn-primary btn-block" type="submit">Εισαγωγή/Ενημέρωση</button>
                   </div>

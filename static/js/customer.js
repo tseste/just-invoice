@@ -16,21 +16,6 @@ $(window).on("load", function(){
 });
 
 $(document).ready(function() {
-    $('#btnaddUser').click(function() {
-
-        $.ajax({
-            url: '/add_customer',
-            data: $('form').serialize(),
-            type: 'POST',
-            success: function(response) {
-                console.log('success');
-            },
-            error: function(error) {
-              console.log(error);
-            }
-        });
-    });
-
     $('#TRN').blur(function() {
         $.ajax({
             url: '/select_customer',

@@ -1,7 +1,8 @@
 {% extends 'base.html'%}
+{% from "_baseformhelper.html" import render_field %}
 
 {% block extrajs %}
-    <script src="../static/js/customer.js"></script>
+    <script src="{{ url_for('static', filename='js/customer.js') }}"></script>
 {% endblock %}
 
 {% block mainbody %}
@@ -9,35 +10,35 @@
         <div class="row justify-content-center">
             <div class="col-8">
                 <h1>Εισαγωγή/Ενημέρωση Πελάτη</h1>
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    {% for message in messages %}
+                      <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>{{ message }}</strong> One more Customer.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
                 <hr/>
-                <form action="{{ url_for('add_customer') }}" method="post">
-                    <label for="FirstName">Όνομα</label>
-                    <input type="text" name="FirstName" id="FirstName" class="form-control" required>
-                    <label for="LastName">Επώνυμο</label>
-                    <input type="text" name="LastName" id="LastName" class="form-control" required>
-                    <label for="Company">Επάγγελμα</label>
-                    <input type="text" name="Company" id="Company" class="form-control">
-                    <label for="Address">Διεύθυνση</label>
-                    <input type="text" name="Address" id="Address" class="form-control">
-                    <label for="City">Πόλη</label>
-                    <input type="text" name="City" id="City" class="form-control">
-                    <label for="Country">Χώρα</label>
-                    <input type="text" name="Country" id="Country" class="form-control">
-                    <label for="PostalCode">Ταχυδρομικός Κώδικας</label>
-                    <input type="text" name="PostalCode" id="PostalCode" class="form-control">
-                    <label for="Phone">Τηλέφωνο</label>
-                    <input type="text" name="Phone" id="Phone" class="form-control">
-                    <label for="Fax">Fax</label>
-                    <input type="text" name="Fax" id="Fax" class="form-control">
-                    <label for="Email">Email</label>
-                    <input type="email" name="Email" id="Email" class="form-control">
-                    <label for="TRN">Α.Φ.Μ.</label>
-                    <input type="text" name="TRN" id="TRN" class="form-control" list="customer_list" autocomplete="off" required>
-                    <datalist id="customer_list">
-
-                    </datalist>
-                    <label for="TaxOffice">Δ.Ο.Υ.</label>
-                    <input type="text" name="TaxOffice" id="TaxOffice" class="form-control" required>
+                <form action="{{ url_for('customer') }}" method="post">
+                    {{ form.csrf_token }}
+                    {{ render_field(form.FirstName) }}
+                    {{ render_field(form.LastName) }}
+                    {{ render_field(form.Company) }}
+                    {{ render_field(form.Address) }}
+                    {{ render_field(form.City) }}
+                    {{ render_field(form.Country) }}
+                    {{ render_field(form.PostalCode) }}
+                    {{ render_field(form.Phone) }}
+                    {{ render_field(form.Fax) }}
+                    {{ render_field(form.Email) }}
+                    {{ form.TRN.label }}
+                    {{ form.TRN(class="form-control", list="customer_list")}}
+                    <datalist id="customer_list"></datalist>
+                    {{ render_field(form.TaxOffice) }}
                     <hr/>
                     <button id="btnaddUser" class="btn btn-lg btn-primary btn-block" type="submit">Εισαγωγή/Ενημέρωση</button>
                 </form>
