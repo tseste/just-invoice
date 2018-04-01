@@ -5,8 +5,8 @@ $(window).on("load", function(){
       type: 'POST',
       success: function(response) {
           $.each(response.message, function(index, customer){
-          $("#customer_list").append('<option value="' + customer[2] + '">\
-          '+customer[0]+' '+customer[1]+': '+customer[2]+'</option>');
+          $("#customer_list").append('<option value="' + customer[1] + '">\
+          '+customer[0]+': '+customer[1]+'</option>');
         });
       },
       error: function(error) {
@@ -23,8 +23,7 @@ $(document).ready(function() {
             type: 'POST',
             success: function(response) {
               if (Object.keys(response).length > 1){
-                $('#FirstName').val(response.FirstName);
-                $('#LastName').val(response.LastName);
+                $('#Full_Name').val(response.Full_Name);
                 $('#Company').val(response.Company);
                 $('#Address').val(response.Address);
                 $('#City').val(response.City);

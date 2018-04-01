@@ -5,8 +5,21 @@ $(window).on("load", function(){
       type: 'POST',
       success: function(response) {
           $.each(response.message, function(index, customer){
-          $("#customer_list").append('<option value="' + customer[2] + '">\
-          '+customer[0]+' '+customer[1]+': '+customer[2]+'</option>');
+          $("#billingTRNlist").append('<option value="' + customer[1] + '">\
+          '+customer[0]+': '+customer[1]+'</option>');
+        });
+      },
+      error: function(error) {
+          console.log(error)
+      }
+  });
+  $.ajax({
+      url: '/product_list',
+      data:'',
+      type: 'POST',
+      success: function(response) {
+          $.each(response.message, function(index, product){
+          $("#product_list").append('<option value="' + product + '"></option>');
         });
       },
       error: function(error) {
@@ -15,124 +28,120 @@ $(window).on("load", function(){
   });
 });
 $(document).ready(function(){
-  var step = 1;
-  $(document).on("click",".next", function () {
-    $(this).parents('section').fadeOut(500);
-    $('#step-' + String(++step)).fadeIn(4000);
+  $('#print').prop('disabled', true);
+  $('#save').click(function() {
+    $.each($('#rowController').children('tr'), function(){console.log(this.id)});
+   $('#print').prop('disabled', false);
+ });
+ $('#print').click(function() {
+   $('#print').html('<i class="fas fa-spinner fa-spin"></i>');
+   $.ajax({
+       url: 'invoice/create_pdf',
+       data: JSON.stringify({
+         'Full_Name': document.getElementById('Full_Name').value,
+         'BillingAddress': document.getElementById('BillingAddress').value,
+         'BillingCity': document.getElementById('BillingCity').value,
+         'BillingCountry': document.getElementById('BillingCountry').value,
+         'BillingPostalCode': document.getElementById('BillingPostalCode').value,
+         'Company': document.getElementById('Company').value,
+         'TRN': document.getElementById('TRN').value,
+         'TaxOffice': document.getElementById('TaxOffice').value,
+         'InvoiceId': document.getElementById('InvoiceId').value,
+         'datepicker1': document.getElementById('datepicker1').value,
+         'datepicker2': document.getElementById('datepicker2').value,
+         'Total': document.getElementById('Total').value,
+       }),
+       contentType: 'application/json;charset=UTF-8',
+       type: 'POST',
+       success: function(response) {
+         $("#print").unbind();
+         $('#print').wrap("<a href='/invoice/"+document.getElementById('InvoiceId').value+".pdf'</a>")
+         $('#print').html('Δείτε το pdf.');
+         }
+       ,
+       error: function(error) {
+           console.log(error)
+       }
+   });
+ });
 
+  $('#TRN').blur(function() {
+    if ($('#TRN').val()){
+      $.ajax({
+          url: '/select_customer',
+          data:$('#TRN').serialize(),
+          type: 'POST',
+          success: function(response) {
+            if (Object.keys(response).length > 1){
+              $('#Full_Name').val(response.Full_Name);
+              $('#BillingAddress').val(response.Address);
+              $('#BillingCity').val(response.City);
+              $('#BillingCountry').val(response.Country);
+              $('#BillingPostalCode').val(response.PostalCode);
+              $('#Company').val(response.Company);
+              $('#TaxOffice').val(response.TaxOffice);
+            }
+          },
+          error: function(error) {
+              console.log(error)
+          }
+      });
+    }
+  });
 
-  });
-  $(document).on("click",".previous", function () {
-    $(this).parents('section').fadeOut(500);
-    $('#step-' + String(--step)).fadeIn(4000);
-  });
-    var i=1;
+    var i=0;
     $("#add_row").click(
         function()
         {
-            $('#addr'+i).html(
-          "<td class='text-center'>"+
-                (i+1)+
-          "</td>\
-          <td>\
-          <input type='text' name='product_name"+i+"' id='product_name"+i+"' onblur='fillit(this.id)' class='form-control' >\
+          $('#rowController').append('<tr id="row'+(i)+'"></tr>');
+            $('#row'+i).html(
+          "<td scope='row'>\
+          <input class='input-lg' type='text' onblur='fillRow(this)' name='ProductId' id='ProductId"+i+"' placeholder='Αναζήτηση' list='product_list' />\
           </td>\
           <td>\
-          <input type='text' name='product_mu"+i+"' id='product_mu"+i+"' class='form-control' >\
+          <p name='Name' id='Name"+i+"' ></p>\
           </td>\
           <td>\
-          <input type='text' name='quantity"+i+"' id='quantity"+i+"' onchange='calcit(this.id)' />\
+          <p name='UnitTypeId' id='UnitTypeId"+i+"' ></p>\
           </td>\
           <td>\
-          <input type='text' name='units0' id='units0' />\
+          <input class='input-md' type='text' name='Quantity' id='Quantity"+i+"'/>\
           </td>\
           <td>\
-          <input type='text' name='product_up"+i+"' id='product_up"+i+"' class='form-control' >\
+          <p type='text' name='UnitPrice' id='UnitPrice"+i+"'></p>\
           </td>\
           <td>\
-          <input type='text' name='fpa"+i+"' id='fpa"+i+"'  class='form-control'/>\
-          </td>\
-          <td>\
-          <input type='text' name='total"+i+"' id='total"+i+"' />\
-          </td>\
-            </tr>"
-            );
-    $('#tab_logic').append('<tr id="addr'+(i+1)+'"></tr>');
-        i++;
+          <p name='Price' id='Price"+i+"'></p>\
+          </td>");
+          i++;
     });
 
     $("#delete_row").click(
         function()
         {
-          if(i>1)
+          if(i>0)
             {
-            $("#addr"+(i-1)).html('');
-            i--;
+            $("#row"+(--i)).remove();
         }
-      }
-    );
-    $('#datepicker').datepicker({uiLibrary: 'bootstrap4'});
-    $('#customer_name').blur(function() {
-        $.ajax({
-            url: '/select_user',
-            data:$('#customer_name').serialize(),
-            type: 'POST',
-            success: function(response) {
-                console.log(response);
-                $('#customer_name').val(response.customer_name);
-                $('#customer_job').val(response.customer_job);
-                $('#customer_afm').val(response.customer_afm);
-                $('#customer_doy').val(response.customer_doy);
-                $('#customer_address').val(response.customer_address);
-            },
-            error: function(error) {
-                console.log(error)
-            }
-        });
-    });
-
-    fillit = function (pid){
-        var pidnum = pid.slice(-1)
+      });
+      fillRow = function(element) {
+        var row_num = element.id.slice(element.id.length-1);
         $.ajax({
             url: '/select_product',
-            data:$('#product_name'+pidnum).serialize(),
+            data: JSON.stringify({'ProductId': element.value}),
+            contentType: 'application/json;charset=UTF-8',
             type: 'POST',
             success: function(response) {
-                console.log(response);
-                $('#product_name'+pidnum).val(response.product_name);
-                $('#product_mu'+pidnum).val(response.product_mu);
-                $('#quantity'+pidnum).val(1);
-                $('#product_up'+pidnum).val(response.product_up);
-                $('#total'+pidnum).val(response.product_up);
+              if (Object.keys(response).length > 1){
+                $('#Name'+row_num).html(response.Name);
+                $('#UnitPrice'+row_num).html(response.UnitPrice);
+              }
             },
             error: function(error) {
                 console.log(error)
             }
         });
-    };
-
-    calcit = function (qid)
-    {
-        var q = parseFloat($('#'+qid).val());
-        var qidnum = qid.slice(-1)
-        var t = q*parseFloat($('#product_up'+qidnum).val())
-        $('#total'+qidnum).val(t);
-
-    };
-
-    totalit = function (tid)
-    {
-        var bt = 0
-        for (j=0;j<i;j++)
-        {
-            bt += parseFloat($('#total'+j).val());
-        }
-        $('#'+tid).val(bt);
-    };
-
-    fpait = function (fid)
-    {
-        var st = parseFloat($('#total').val()) + parseFloat($('#total').val())*parseFloat($('#'+fid).val())/100
-        $('#invoice_total').val(st.toFixed(2));
-    };
-});
+      }
+    $('#datepicker1').datepicker({dateFormat: 'dd/mm/yy'});
+    $('#datepicker2').datepicker({dateFormat: 'dd/mm/yy'});
+  });
