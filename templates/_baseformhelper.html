@@ -2,3 +2,54 @@
   {{ field.label }}
   {{ field(class="form-control")}}
 {% endmacro %}
+
+{% macro company_field(label, value) %}
+{% if value %}
+<div class="row">
+  <div class="col-4"><strong>{{label}}:</strong></div>
+  <div class="col-8">{{value}}</div>
+</div>
+{% endif %}
+{% endmacro %}
+
+{% macro customer_field(label, name, value) %}
+<div class="row">
+  <div class="col-12">
+    <label for="{{name}}" style="display:block;">{{label}}:</label>
+    <input id="{{name}}" name="{{name}}" type="text" placeholder="{{label}}" value="{{value}}" style="display:block;"/>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro invoice_field(label, name, value) %}
+<div class="row">
+  <div class="col-4 text-left">
+    <label for="{{name}}">{{label}}:</label>
+  </div>
+  <div class="col-8 text-right">
+    <input id="{{name}}" class="rtl" name="{{name}}" type="text" placeholder="{{label}}" value="{{value}}"/>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro price_field(label, name, value) %}
+<div class="row">
+  <div class="col-7 text-left">
+    <label for="{{name}}">{{label}}:</label>
+  </div>
+  <div class="col-5 text-right">
+    <input id="{{name}}" class="input-xs rtl" name="{{name}}" type="text" placeholder="{{label}}" value="{{value}}"/>€
+  </div>
+</div>
+{% endmacro %}
+
+{% macro percent_field(label, name, value) %}
+<div class="row">
+  <div class="col-7 text-left">
+    <label for="{{name}}">{{label}}:</label>
+  </div>
+  <div class="col-5 text-right">
+    <input id="{{name}}" class="input-xs rtl" name="{{name}}" type="text" placeholder="{{label}}" value="{{value}}"/>%
+  </div>
+</div>
+{% endmacro %}

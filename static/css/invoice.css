@@ -1,6 +1,71 @@
-input[type=text], input[type=email], label {
-  width: 60%;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+@page {
+  size: A4;
+  margin: 1em;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  margin:0;
+  padding:0;
+}
+body{
+  position:relative;
+}
+#printable * {
+    font-family: "Times New Roman";
+  }
+
+@-moz-document url-prefix() {
+  input#TRN:focus {
+    width: 300px;
+  }
+}
+
+.vertical-line {
+  border-right:1px solid rgb(217,217,217);
+  height: inherit;
+}
+
+input {
+  border: 0;
+  height: 19px;
+  line-height: 12px;
+}
+input:focus{
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.input-sm {
+  width: 20px;
+}
+.input-md {
+  width: 50px;
+}
+.input-lg {
+  width: 100px;
+}
+.input-xs {
+  width: 130px;
+}
+input {
+  font-size: 16px;
+}
+label {
+  font-weight: bold;
+}
+td > p {
+  word-wrap: normal;
+}
+
+.rtl {
+  direction:RTL;
+}
+
+table {
+  font-size: 14px;
 }

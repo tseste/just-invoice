@@ -1,216 +1,175 @@
-{% extends 'base.html'%}
-
-{% block extracss %}
-  <link rel="stylesheet" href="../static/css/invoice.css">
-{% endblock %}
+{% extends 'base.html' %}
+{% from "_baseformhelper.html" import render_field, company_field, customer_field, invoice_field, price_field, percent_field%}
 
 {% block extrajs %}
-    <script src="../static/js/invoice.js"></script>
+  <script src="{{url_for('static', filename='js/invoice.js')}}"></script>
+{% endblock %}
+
+{% block extracss %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/invoice.css') }}">
 {% endblock %}
 
 {% block mainbody %}
-<div class="vertical-center" style="margin-top:60px;">
-  <div class="container" style="font-size: medium;">
-    <form action="#" method="post">
-      <section id="step-1">
-        <div class="row justify-content-center">
-          <div class="col-9">
-            <div class="card">
-              <div class="card-header text-center">
-                Στοιχεία Τιμολογίου
-              </div>
-              <div class="card-body rounded" style="padding-bottom:10px; margin-bottom:5px;">
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-12">
-                      <label for="InvoiceId">Αριθμός Τιμολογίου</label>
-                      <input type="text" name="InvoiceId" id="InvoiceId" class="form-control" required>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12">
-                      <label for="datepicker">Ημερομηνία Έκδοσης</label>
-                      <div class="row justify-content-center">
-                        <div class="col-8">
-                          <input id="datepicker" type="text" name="datepicker" class="form-control">
-                      </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-                <div class="card-footer" style="background-color:white;">
-                  <button type="button" class="btn btn-primary float-right next">Επόμενο</button>
-                </div>
+  <section>
+    <div class="container" id="printable">
+      <div class="row">
+        <div class="col-12">
+          <h2 class="text-center">{{ company.name }}</h2>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-4">
+          <div class="row">
+            <div class="col-12">
+              <img style="border:0;width:220px;height:150px;" class="img-thumbnail mx-auto d-block" src="{{ company.logo }}" alt="Company Logo">
             </div>
           </div>
         </div>
-      </section>
-      <section id="step-2" style="display: none;">
-        <div class="row justify-content-center">
-          <div class="col-9">
-            <div class="card">
-              <div class="card-header text-center">
-                Στοιχεία πελάτη
-              </div>
-              <div class="card-body  rounded" style="padding-bottom:10px; margin-bottom:5px;">
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-12">
-                      <label for="FirstName">Όνομα</label>
-                      <input type="text" name="FirstName" id="FirstName" class="form-control" required>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12">
-                    <label for="LastName">Επώνυμο</label>
-                    <input type="text" name="LastName" id="LastName" class="form-control" required>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12">
-                    <label for="Company">Επάγγελμα</label>
-                    <input type="text" name="Company" id="Company" class="form-control"  required>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12">
-                      <label for="TRN">Α.Φ.Μ</label>
-                      <input type="text" name="TRN" id="TRN" class="form-control" list="customer_list" autocomplete="off" required>
-                      <datalist id="customer_list">
-                      </datalist>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12">
-                      <label for="TaxOffice">Δ.Ο.Υ.</label>
-                      <input type="text" name="TaxOffice" id="TaxOffice" class="form-control"  required>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-footer" style="background-color: white;">
-                <div class="row justify-content-center vertical-center">
-                  <div class="col-6">
-                    <button type="button" class="btn btn-primary float-left previous">Προηγούμενο</button>
-                  </div>
-                  <div class="col-6">
-                    <button type="button" class="btn btn-primary float-right next">Επόμενο</button>
-              </div>
+        <div class="col-8">
+          <div class="row">
+            <div class="col-6 vertical-line">
+              {{company_field("Διεύθυνση", company.address)}}
+              {{company_field("Πόλη", company.city)}}
+              {{company_field("Τ.Κ.", company.postal_code)}}
+              {{company_field("Χώρα", company.country)}}
+            </div>
+            <div class="col-6">
+                {{company_field("Επάγγελμα", company.job)}}
+                {{company_field("Α.Φ.Μ.", company.TRN)}}
+                {{company_field("Δ.Ο.Υ.", company.TaxOffice)}}
             </div>
           </div>
-        </div>
-      </section>
-      <section id="step-3" style="display: none;">
-        <div class="row justify-content-center">
-          <div class="col-9">
-            <div class="card">
-              <div class="card-header text-center">
-                Στοιχεία Αποστολής
-              </div>
-              <div class="card-body  rounded" style="padding-bottom:10px; margin-bottom:5px;">
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-12">
-                      <label for="Country">Χώρα</label>
-                      <input type="text" name="Country" id="Country" class="form-control"  required>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12">
-                      <label for="City">Πόλη</label>
-                      <input type="text" name="City" id="City" class="form-control"  required>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12">
-                      <label for="Address">Διεύθυνση</label>
-                      <input type="text" name="Address" id="Address" class="form-control"  required>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12">
-                      <label for="PostalCode">Ταχυδρομικός Κώδικας</label>
-                      <input type="text" name="PostalCode" id="PostalCode" class="form-control"  required>
-                    </div>
-                  </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-6">
+                  {% if company.phone %}
+                  <i class="fas fa-phone"></i> {{ company.phone|join(' - ') }}
+                  {% endif %}
+                  {% if company.email %}
+                  <br>
+                  <i class="fas fa-envelope-square"></i> {{ company.email }}
+                  {% endif %}
                 </div>
-              </div>
-              <div class="card-footer" style="background-color: white;">
-                <div class="row justify-content-center vertical-center">
-                  <div class="col-6">
-                    <button type="button" class="btn btn-primary float-left previous">Προηγούμενο</button>
-                  </div>
-                  <div class="col-6">
-                    <button type="button" class="btn btn-primary float-right next">Επόμενο</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section id="step-4" style="display: none;">
-        <div class="row justify-content-center">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header text-center">
-                Στοιχεία Προϊόντων
-              </div>
-              <div class="card-body  rounded" style="padding-bottom:10px; margin-bottom:5px;">
-                <div class="form-group">
-                  <div class="table-responsive">
-                      <table class="table table-bordered" id="tab_logic">
-                        <thead>
-                          <tr>
-                            <th scope="col" class="col-1 text-center">#</th>
-                            <th scope="col" class="col-3 text-center">ΕΙΔΟΣ ΕΜΠΟΡΕΥΜΑΤΟΣ</th>
-                            <th scope="col" class="col-1 text-center">Μ.Μ.</th>
-                            <th scope="col" class="col-1 text-center">ΠΟΣΟΤΗΤΑ</th>
-                            <th scope="col" class="col-1 text-center">ΤΕΜΑΧΙΑ</th>
-                            <th scope="col" class="col-2 text-center">ΤΙΜΗ ΜΟΝΑΔΑΣ</th>
-                            <th scope="col" class="col-1 text-center">Φ.Π.Α.</th>
-                            <th scope="col" class="col-2 text-center">ΣΥΝΟΛΑ</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr id='addr0'>
-                            <td class="text-center">1</td>
-                            <td><input type="text" name="product_name0" id="product_name0" class="form-control" onblur="fillit(this.id)" ></td>
-                            <td><input type="text" name="product_mu0" id="product_mu0" class="form-control" ></td>
-                            <td><input type="text" name='quantity0' id='quantity0'  onchange="calcit(this.id)" class="form-control"/></td>
-                            <td><input type="text" name='units0' id='units0'  class="form-control"/></td>
-                            <td><input type="text" name="product_up0" id="product_up0" class="form-control" ></td>
-                            <td><input type="text" name='fpa0' id='fpa0'  class="form-control"/></td>
-                            <td><input type="text" name='total0' id='total0'  class="form-control"/></td>
-                          </tr>
-                          <tr id='addr1'></tr>
-                        </tbody>
-                      </table>
-                      <div class="container" style="margin-bottom:5px;">
-                        <div class="row justify-content-center vertical-center">
-                          <div class="col-6">
-                            <button type="button" id="add_row" class="btn btn-default float-left">Προσθήκη</button>
-                          </div>
-                          <div class="col-6">
-                            <button type="button" id="delete_row" class="btn btn-default float-right">Διαγραφή</button>
-                          </div>
-                        </div>
-                      </div>
-                  </div>
-                </div>
-                <div class="card-footer" style="background-color: white;">
-                  <div class="row justify-content-center vertical-center">
-                    <div class="col-6">
-                      <button type="button" class="btn btn-primary float-left previous">Προηγούμενο</button>
-                    </div>
-                    <div class="col-6">
-                      <button type="submit" class="btn btn-success float-right">Εκτύπωση</button>
+                <div class="col-6">
+                  {% if company.fax %}
+                  <i class="fas fa-fax"></i> {{company.fax|join(' - ')}}
+                  {% endif %}
+                  {% if company.website %}
+                  <br>
+                  <i class="fas fa-globe"></i> {{ company.website }}
+                  {% endif %}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-    </form>
-  </div>
-</div>
+      </div>
+      <hr>
+      <form id="invoice_form" method="post">
+        <div class="row">
+          <div class="col-6 vertical-line">
+            <h4 class="text-center">Πελάτης</h4>
+            <div class="row">
+              <div class="offset-1"></div>
+              <div class="col-5">
+                {{ customer_field("Ονοματεπώνυμο", "Full_Name", "") }}
+                {{ customer_field("Επάγγελμα", "Company", "") }}
+                <div class="row">
+                  <div class="col-12">
+                    <label for="TRN" style="display:block;">Α.Φ.Μ.:</label>
+                    <input id="TRN" name="TRN" type="text" placeholder="Α.Φ.Μ." list="billingTRNlist" autocomplete="off" style="display:block;"/>
+                  </div>
+                </div>
+                {{ customer_field("Δ.Ο.Υ.", "TaxOffice", "") }}
+                <datalist id="billingTRNlist"></datalist>
+              </div>
+              <div class="col-5">
+                {{ customer_field("Διεύθυνση", "BillingAddress", "") }}
+                {{ customer_field("Πόλη", "BillingCity", "") }}
+                {{ customer_field("Τ.Κ.", "BillingPostalCode", "") }}
+                {{ customer_field("Χώρα", "BillingCountry", "") }}
+              </div>
+              <div class="offset-1"></div>
+            </div>
+          </div>
+          <div class="col-6 text-center">
+            <h4>Τιμολόγιο Πώλησης</h4>
+            <div class="row">
+              <div class="offset-1"></div>
+              <div class="col-10 text-center">
+                {{ invoice_field("Αριθμός", "InvoiceId", "") }}
+                {{ invoice_field("Ημερομηνία", "datepicker1", "") }}
+                {{ invoice_field("Προθεσμία", "datepicker2", "") }}
+              </div>
+              <div class="offset-1"></div>
+            </div>
+            <hr>
+            <br>
+            <div class="row">
+              <div class="offset-1"></div>
+              <div class="col-5 text-left">
+                  <h5><strong>Συνολική αξία:</strong></h5>
+              </div>
+              <div class="col-5 text-right">
+                <input type="text" name="Total" id="Total" class="rtl" value="0" style="font-weight:bold;">€
+              </div>
+              <div class="offset-1"></div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <hr>
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-sm table-bordered">
+            <thead class="bg-dark text-white text-center">
+              <tr>
+                <th scope="col" style="vertical-align:middle;">Κωδικός</th>
+                <th scope="col" style="vertical-align:middle;">Προϊόν</th>
+                <th scope="col" style="vertical-align:middle;">Μ.Μ.</th>
+                <th scope="col" style="vertical-align:middle;">Ποσότητα</th>
+                <th scope="col" style="vertical-align:middle;">Τιμή Μονάδας</th>
+                <th scope="col" style="vertical-align:middle;">Αξία</th>
+              </tr>
+            </thead>
+            <tbody id="rowController">
+            </tbody>
+            <datalist id="product_list"></datalist>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <hr>
+          <div class="row">
+            <div class="col-6">
+              {{price_field("Μερικό Σύνολο", "Subtotal", "0")}}
+              {{percent_field("Έκπτωση", "Discount", "0")}}
+              {{price_field("Μερικό Σύνολο με Έκπτωση", "AfterDiscount", "0")}}
+            </div>
+            <div class="col-6">
+              {{percent_field("Φ.Π.Α.", "VAT", "24")}}
+              {{price_field("Αξία Φ.Π.Α.", "VATPrice", "0")}}
+              {{ price_field("Οφειλούμενο ποσό", "TotalDue", "0")}}
+            </div>
+          </div>
+          <hr>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <button type="button" id="add_row" name="button" class="btn btn-default">Προσθήκη</button>
+          <button type="button" id="delete_row" name="button" class="btn btn-default">Αφαίρεση</button>
+          <button style="margin-left:10px" type="button" id="print" name="print" class="btn btn-primary float-right" disabled>Εκτύπωση</button>
+          <button type="button" id="save" name="save" class="btn btn-success float-right">Αποθήκευση</button>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

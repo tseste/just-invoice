@@ -5,7 +5,7 @@
     <title>Add New UnitType</title>
   </head>
   <body>
-    <form action="/new_unittype" method="post">
+    <form action="{{ url_for('new_unittype') }}" method="post">
       <label for="Name">Νέα Μονάδα Μέτρησης</label>
       <input type="text" name="Name" id="Name" required>
       <input type="submit"
