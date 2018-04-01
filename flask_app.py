@@ -1,6 +1,8 @@
 """Application routes."""
+import os
+import pdfkit
 from flask import (Flask, request, json, render_template, redirect, url_for,
-                   flash)
+                   flash, make_response)
 from flask_mysqldb import MySQLdb
 
 from _forms import CustomerForm, ProductForm
@@ -37,7 +39,76 @@ def index():
 @app.route("/invoice", methods=['GET'])
 def invoice():
     """Create invoice."""
-    return render_template('invoice.html')
+    class CompanyInfo(object):
+        """
+        Temporary hardcoded params until flask login is implemented.
+
+        Then user info will contain these attributes.
+        """
+
+        name = ""
+        logo = url_for('static', filename="images/logo.png")
+        job = ""
+        TRN = ""
+        TaxOffice = ""
+        address = ""
+        city = ""
+        postal_code = ""
+        country = ""
+        phone = []
+        fax = []
+        email = ""
+        website = ""
+    company = CompanyInfo()
+
+    return render_template('invoice.html', company=company)
+
+
+@app.route("/invoice/create_pdf", methods=['POST'])
+def invoice_pdf():
+    """Create invoice."""
+    class CompanyInfo(object):
+        """
+        Temporary hardcoded params until flask login is implemented.
+
+        Then user info will contain these attributes.
+        """
+
+        name = ""
+        logo = ("file://" + os.path.abspath('.') +
+                url_for('static', filename="images/logo.png"))
+        job = ""
+        TRN = ""
+        TaxOffice = ""
+        address = ""
+        city = ""
+        postal_code = ""
+        country = ""
+        phone = []
+        fax = []
+        email = ""
+        website = ""
+    company = CompanyInfo()
+    params = request.json
+    pdfkit.from_string(input=render_template('print_invoice.html',
+                                             company=company, **params),
+                       output_path=('assets/invoices/' + params['InvoiceId'] +
+                                    '.pdf'),
+                       css=['static/css/invoice.css'])
+    return redirect(url_for('view_pdf', invoice_id=params['InvoiceId']))
+
+
+@app.route('/invoice/<invoice_id>' + '.pdf', methods=['GET'])
+def view_pdf(invoice_id):
+    """Show pdf with the given invoice_id."""
+    with open('assets/invoices/' + invoice_id + '.pdf', 'rb') as pdf:
+        response = make_response(pdf.read())
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = ('inline;'
+                                                   ' filename=%s.pdf' %
+                                                   invoice_id)
+    return response
+
 
 # --------------------------------------------------------------------------- #
 
@@ -50,8 +121,8 @@ def customer():
     form = CustomerForm()
     if form.validate_on_submit():
         cursor = mysql.cursor()
-        cursor.callproc('sp_Customer', (form.FirstName.data,
-                                        form.LastName.data, form.Company.data,
+        cursor.callproc('sp_Customer', (form.Full_Name.data,
+                                        form.Company.data,
                                         form.Address.data, form.City.data,
                                         form.Country.data,
                                         form.PostalCode.data,
@@ -68,7 +139,7 @@ def customer():
 def customer_list():
     """Fetch all customers SQL query."""
     cursor = mysql.cursor()
-    cursor.execute("select FirstName, LastName, TRN from Customer")
+    cursor.execute("select Full_Name, TRN from Customer")
     data = cursor.fetchall()
     return json.jsonify({'message': data})
 
@@ -78,11 +149,13 @@ def select_customer():
     """Select customers from customer_name."""
     cursor = mysql.cursor(MySQLdb.cursors.DictCursor)
     TRN = request.form['TRN']
-    cursor.execute("""SELECT *
+    cursor.execute('''SELECT *
                       FROM Customer
-                      WHERE TRN LIKE '{}'""".format(TRN))
+                      WHERE TRN=%s''', (TRN,))
     data = cursor.fetchone()
-    return json.jsonify(data)
+    if data:
+        return json.jsonify(data)
+    return json.jsonify({})
 
 # --------------------------------------------------------------------------- #
 
@@ -123,17 +196,15 @@ def product_list():
 def select_product():
     """Select products from product_name."""
     cursor = mysql.cursor(MySQLdb.cursors.DictCursor)
-    Name = request.form['Name']
-    try:
-        cursor.execute(r"""SELECT *
-                           FROM Product
-                           WHERE Name LIKE '{}'""".format(Name))
-        data = cursor.fetchone()
+    ProductId = request.json['ProductId']
+    cursor.execute("""SELECT *
+                       FROM Product
+                       WHERE Name=%s""", (ProductId,))
+    data = cursor.fetchone()
+    if data:
         data['UnitPrice'] = '{0:f}'.format(data['UnitPrice'])
         return json.jsonify(data)
-    except Exception as e:
-        print(e)
-        return json.jsonify({'Name': Name})
+    return json.jsonify({})
 
 
 @app.route("/product_types_list", methods=['POST'])
@@ -158,15 +229,23 @@ def new_unittype():
     Name = request.form['Name']
     cursor.execute("""SELECT Name
                       FROM ProductUnitType
-                      WHERE Name LIKE '{}'""".format(Name))
+                      WHERE Name LIKE %s""", (Name,))
     data = cursor.fetchall()
     if len(data) is 0:
         cursor.execute("""INSERT INTO ProductUnitType (Name)
-                          VALUES ('{}')""".format(Name))
+                          VALUES (%s)""", (Name,))
         mysql.commit()
     return redirect(url_for('unittype'))
 
 # --------------------------------------------------------------------------- #
+
+
+# Search related routes
+
+@app.route("/search", methods=['GET'])
+def search():
+    """Create or update a product."""
+    return render_template('search.html')
 
 
 if __name__ == '__main__':
