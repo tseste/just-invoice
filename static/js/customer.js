@@ -23,7 +23,8 @@ $(document).ready(function() {
             type: 'POST',
             success: function(response) {
               if (Object.keys(response).length > 1){
-                $('#Full_Name').val(response.Full_Name);
+                $('#FirstName').val(response.FirstName);
+                $('#LastName').val(response.LastName);
                 $('#Company').val(response.Company);
                 $('#Address').val(response.Address);
                 $('#City').val(response.City);

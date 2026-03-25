@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="{{ current_locale }}">
 
     <head>
 
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Just Invoice - A simple invoice builer and tracker</title>
+        <title>{{ _('Just Invoice - Effortless invoices, Powerful Insights') }}</title>
 
         <!-- Latest compiled and minified CSS -->
-        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}?">
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.png') }}?">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
@@ -40,18 +40,24 @@
               <div class="col-12">
 
             <ul class="navbar-nav mr-auto text-center">
-              <li class="nav-item" id=home_url><a class="nav-link" href="/">Κεντρική Σελίδα</a></li>
-              <li class="nav-item" id=invoice_url><a class="nav-link" href="{{ url_for('invoice') }}">Νέο Τιμολόγιο</a></li>
+              <li class="nav-item" id=home_url><a class="nav-link" href="/">{{ _('Κεντρική Σελίδα') }}</a></li>
+              <li class="nav-item" id=invoice_url><a class="nav-link" href="{{ url_for('invoice.invoice') }}">{{ _('Νέο Τιμολόγιο') }}</a></li>
               <div class="dropdown">
 
-              <li class="nav-item" id=customers_url><a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Εισαγωγή/Ενημέρωση</a>
+              <li class="nav-item" id=customers_url><a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ _('Εισαγωγή/Ενημέρωση') }}</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                 <a class="dropdown-item" href="{{ url_for('customer') }}">Πελάτη</a>
-                 <a class="dropdown-item" href="{{ url_for('product') }}">Προϊόντος</a>
+                 <a class="dropdown-item" href="{{ url_for('customer.customer') }}">{{ _('Πελάτη') }}</a>
+                 <a class="dropdown-item" href="{{ url_for('product.product') }}">{{ _('Προϊόντος') }}</a>
                </div>
              </li>
            </div>
-              <li class="nav-item" id=search><a class="nav-link" href="{{ url_for('search') }}">Αναζήτητση</a></li>
+              <li class="nav-item" id=search><a class="nav-link" href="{{ url_for('search.search') }}">{{ _('Αναζήτηση') }}</a></li>
+              <li class="nav-item" id=language_url>
+                <div class="nav-link">
+                  <a href="{{ url_for('index.set_language', lang_code='el') }}">EL</a> |
+                  <a href="{{ url_for('index.set_language', lang_code='en') }}">EN</a>
+                </div>
+              </li>
             </ul>
           </div>
             </div>

@@ -9,12 +9,12 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-8">
-                <h1>Εισαγωγή/Ενημέρωση Προϊόντος</h1>
+                <h1>{{ _('Εισαγωγή/Ενημέρωση Προϊόντος') }}</h1>
                 {% with messages = get_flashed_messages() %}
                   {% if messages %}
                     {% for message in messages %}
                       <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <strong>{{ message }}</strong> One more Product.
+                        <strong>{{ message }}</strong> {{ _('Εισαγωγή Προϊόντος.') }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
@@ -23,7 +23,7 @@
                   {% endif %}
                 {% endwith %}
                 <hr/>
-                <form action="{{ url_for('product') }}" method="post">
+                <form action="{{ url_for('product.product') }}" method="post">
                   <div class="form-group">
                     {{ form.csrf_token }}
                     {{ form.Name.label }}
@@ -36,12 +36,12 @@
                       {{ form.UnitTypeId(class="form-control custom-select") }}
                       </div>
                       <div class="col-1">
-                        <a href="{{ url_for('unittype') }}" target="_blank" title="Είσαγωγή Νέας Μονάδας Μέτρησης"><i class="fas fa-edit fa-2x"></i></a>
+                        <a href="{{ url_for('product.unittype') }}" target="_blank" title="{{ _('Εισαγωγή Νέας Μονάδας Μέτρησης') }}"><i class="fas fa-edit fa-2x"></i></a>
                       </div>
                     </div>
                     {{ render_field(form.UnitPrice) }}
                     <hr/>
-                    <button id="btnaddProduct" class="btn btn-lg btn-primary btn-block" type="submit">Εισαγωγή/Ενημέρωση</button>
+                    <button id="btnaddProduct" class="btn btn-lg btn-primary btn-block" type="submit">{{ _('Εισαγωγή/Ενημέρωση') }}</button>
                   </div>
                 </form>
             </div>

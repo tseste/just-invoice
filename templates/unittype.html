@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ current_locale }}">
   <head>
     <meta charset="utf-8">
-    <title>Add New UnitType</title>
+    <title>{{ _('Προσθήκη Νέας Μονάδας Μέτρησης') }}</title>
   </head>
   <body>
-    <form action="{{ url_for('new_unittype') }}" method="post">
-      <label for="Name">Νέα Μονάδα Μέτρησης</label>
+    <form action="{{ url_for('product.new_unittype') }}" method="post">
+      <label for="Name">{{ _('Νέα Μονάδα Μέτρησης') }}</label>
       <input type="text" name="Name" id="Name" required>
       <input type="submit"
        style="position: absolute; left: -9999px; width: 1px; height: 1px;"

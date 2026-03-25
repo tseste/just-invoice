@@ -1,0 +1,44 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: just-invoice-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SECRET_KEY: change-this-secret
+      FLASK_DEBUG: "0"
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_NAME: InvoiceDB
+      DB_USER: invoice_user
+      DB_PASSWORD: invoice_password
+      PDF_OUTPUT_DIR: assets/invoices
+    ports:
+      - "5000:5000"
+
+  mysql:
+    image: mysql:8.4
+    container_name: just-invoice-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: InvoiceDB
+      MYSQL_USER: invoice_user
+      MYSQL_PASSWORD: invoice_password
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./InvoiceDB_schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+
+volumes:
+  mysql_data:

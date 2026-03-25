@@ -12,6 +12,29 @@ html,body{
 body{
   position:relative;
 }
+
+#printable {
+  position: relative;
+}
+
+.logo-top-layer {
+  position: relative;
+  z-index: 9999;
+  display: inline-block;
+  background: #ffffff;
+}
+
+.company-logo {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10000;
+  border: 0;
+}
+
 #printable * {
     font-family: "Times New Roman";
   }

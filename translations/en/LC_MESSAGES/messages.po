@@ -1,0 +1,256 @@
+# English translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-03-25 21:09+0200\n"
+"PO-Revision-Date: 2026-03-25 16:22+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app/forms.py:18
+msgid "Όνομα"
+msgstr "First Name"
+
+#: app/forms.py:19
+msgid "Επώνυμο"
+msgstr "Last Name"
+
+#: app/forms.py:20 templates/invoice.html:44 templates/invoice.html:84
+#: templates/print_invoice.html:66 templates/print_invoice.html:104
+msgid "Επάγγελμα"
+msgstr "Profession"
+
+#: app/forms.py:21 templates/invoice.html:38 templates/invoice.html:95
+#: templates/print_invoice.html:60 templates/print_invoice.html:115
+msgid "Διεύθυνση"
+msgstr "Address"
+
+#: app/forms.py:22 templates/invoice.html:39 templates/invoice.html:96
+#: templates/print_invoice.html:61 templates/print_invoice.html:116
+msgid "Πόλη"
+msgstr "City"
+
+#: app/forms.py:23 templates/invoice.html:41 templates/invoice.html:98
+#: templates/print_invoice.html:62 templates/print_invoice.html:118
+msgid "Χώρα"
+msgstr "Country"
+
+#: app/forms.py:24
+msgid "Ταχυδρομικός Κώδικας"
+msgstr "Postal Code"
+
+#: app/forms.py:25
+msgid "Τηλέφωνο"
+msgstr "Phone"
+
+#: app/forms.py:29 templates/invoice.html:45 templates/invoice.html:87
+#: templates/invoice.html:88 templates/print_invoice.html:67
+#: templates/print_invoice.html:107 templates/print_invoice.html:108
+msgid "Α.Φ.Μ."
+msgstr "Tax ID"
+
+#: app/forms.py:32
+msgid "Το Α.Φ.Μ. έχει 9 ψηφία."
+msgstr "Tax ID must have 9 digits."
+
+#: app/forms.py:35 templates/invoice.html:46 templates/invoice.html:91
+#: templates/print_invoice.html:68 templates/print_invoice.html:111
+msgid "Δ.Ο.Υ."
+msgstr "Tax Office"
+
+#: app/forms.py:51
+msgid "Όνομα Προϊόντος"
+msgstr "Product Name"
+
+#: app/forms.py:52
+msgid "Περιγραφή"
+msgstr "Description"
+
+#: app/forms.py:53
+msgid "Μονάδα Μέτρησης"
+msgstr "Unit Type"
+
+#: app/forms.py:55
+msgid "Τιμή"
+msgstr "Price"
+
+#: templates/base.html:9 templates/print_invoice.html:11
+msgid "Just Invoice - Effortless invoices, Powerful Insights"
+msgstr "Just Invoice - Effortless invoices, Powerful Insights"
+
+#: templates/base.html:43
+msgid "Κεντρική Σελίδα"
+msgstr "Home"
+
+#: templates/base.html:44
+msgid "Νέο Τιμολόγιο"
+msgstr "New Invoice"
+
+#: templates/base.html:47 templates/customer.html:43 templates/product.html:44
+msgid "Εισαγωγή/Ενημέρωση"
+msgstr "Create/Update"
+
+#: templates/base.html:49
+msgid "Πελάτη"
+msgstr "Customer"
+
+#: templates/base.html:50
+msgid "Προϊόντος"
+msgstr "Product"
+
+#: templates/base.html:54 templates/invoice.html:8
+msgid "Αναζήτηση"
+msgstr "Search"
+
+#: templates/customer.html:12
+msgid "Εισαγωγή/Ενημέρωση Πελάτη"
+msgstr "Create/Update Customer"
+
+#: templates/customer.html:17
+msgid "Εισαγωγή Πελάτη."
+msgstr "Add customer."
+
+#: templates/invoice.html:7
+msgid "Δείτε το pdf."
+msgstr "View PDF"
+
+#: templates/invoice.html:40 templates/invoice.html:97
+#: templates/print_invoice.html:63 templates/print_invoice.html:117
+msgid "Τ.Κ."
+msgstr "ZIP"
+
+#: templates/invoice.html:79 templates/print_invoice.html:100
+msgid "Πελάτης"
+msgstr "Customer"
+
+#: templates/invoice.html:83 templates/print_invoice.html:103
+msgid "Ονοματεπώνυμο"
+msgstr "Full Name"
+
+#: templates/invoice.html:104 templates/print_invoice.html:123
+msgid "Τιμολόγιο Πώλησης"
+msgstr "Sales Invoice"
+
+#: templates/invoice.html:108 templates/print_invoice.html:127
+msgid "Αριθμός"
+msgstr "Number"
+
+#: templates/invoice.html:109 templates/print_invoice.html:128
+msgid "Ημερομηνία"
+msgstr "Date"
+
+#: templates/invoice.html:110 templates/print_invoice.html:129
+msgid "Προθεσμία"
+msgstr "Due Date"
+
+#: templates/invoice.html:119 templates/print_invoice.html:138
+msgid "Συνολική αξία"
+msgstr "Total Value"
+
+#: templates/invoice.html:136 templates/print_invoice.html:153
+msgid "Κωδικός"
+msgstr "Code"
+
+#: templates/invoice.html:137 templates/print_invoice.html:154
+msgid "Προϊόν"
+msgstr "Product"
+
+#: templates/invoice.html:138 templates/print_invoice.html:155
+msgid "Μ.Μ."
+msgstr "Unit"
+
+#: templates/invoice.html:139 templates/print_invoice.html:156
+msgid "Ποσότητα"
+msgstr "Quantity"
+
+#: templates/invoice.html:140 templates/print_invoice.html:157
+msgid "Τιμή Μονάδας"
+msgstr "Unit Price"
+
+#: templates/invoice.html:141 templates/print_invoice.html:158
+msgid "Αξία"
+msgstr "Value"
+
+#: templates/invoice.html:154 templates/print_invoice.html:185
+msgid "Μερικό Σύνολο"
+msgstr "Subtotal"
+
+#: templates/invoice.html:155 templates/print_invoice.html:186
+msgid "Έκπτωση"
+msgstr "Discount"
+
+#: templates/invoice.html:156 templates/print_invoice.html:187
+msgid "Μερικό Σύνολο με Έκπτωση"
+msgstr "Subtotal After Discount"
+
+#: templates/invoice.html:159 templates/print_invoice.html:190
+msgid "Φ.Π.Α."
+msgstr "VAT"
+
+#: templates/invoice.html:160 templates/print_invoice.html:191
+msgid "Αξία Φ.Π.Α."
+msgstr "VAT Amount"
+
+#: templates/invoice.html:161 templates/print_invoice.html:192
+msgid "Οφειλούμενο ποσό"
+msgstr "Amount Due"
+
+#: templates/invoice.html:173
+msgid "Προσθήκη"
+msgstr "Add"
+
+#: templates/invoice.html:174
+msgid "Αφαίρεση"
+msgstr "Remove"
+
+#: templates/invoice.html:175
+msgid "Εκτύπωση"
+msgstr "Print"
+
+#: templates/invoice.html:176
+msgid "Αποθήκευση"
+msgstr "Save"
+
+#: templates/print_invoice.html:205
+msgid "Τραπεζικός Λογαριασμός"
+msgstr "Bank Account"
+
+#: templates/print_invoice.html:211
+msgid "Ο ΠΑΡΑΔΟΥΣ"
+msgstr "Issuer"
+
+#: templates/print_invoice.html:212
+msgid "Ο ΠΑΡΑΛΑΒΩΝ"
+msgstr "Recipient"
+
+#: templates/product.html:12
+msgid "Εισαγωγή/Ενημέρωση Προϊόντος"
+msgstr "Create/Update Product"
+
+#: templates/product.html:17
+msgid "Εισαγωγή Προϊόντος."
+msgstr "Add product."
+
+#: templates/product.html:39
+msgid "Εισαγωγή Νέας Μονάδας Μέτρησης"
+msgstr "Add New Unit Type"
+
+#: templates/unittype.html:5
+msgid "Προσθήκη Νέας Μονάδας Μέτρησης"
+msgstr "Add New Unit Type"
+
+#: templates/unittype.html:9
+msgid "Νέα Μονάδα Μέτρησης"
+msgstr "New Unit Type"
+

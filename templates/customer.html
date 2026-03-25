@@ -9,12 +9,12 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-8">
-                <h1>Εισαγωγή/Ενημέρωση Πελάτη</h1>
+                <h1>{{ _('Εισαγωγή/Ενημέρωση Πελάτη') }}</h1>
                 {% with messages = get_flashed_messages() %}
                   {% if messages %}
                     {% for message in messages %}
                       <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <strong>{{ message }}</strong> One more Customer.
+                        <strong>{{ message }}</strong> {{ _('Εισαγωγή Πελάτη.') }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
@@ -23,9 +23,10 @@
                   {% endif %}
                 {% endwith %}
                 <hr/>
-                <form action="{{ url_for('customer') }}" method="post">
+                <form action="{{ url_for('customer.customer') }}" method="post">
                     {{ form.csrf_token }}
-                    {{ render_field(form.Full_Name) }}
+                  {{ render_field(form.FirstName) }}
+                  {{ render_field(form.LastName) }}
                     {{ render_field(form.Company) }}
                     {{ render_field(form.Address) }}
                     {{ render_field(form.City) }}
@@ -39,7 +40,7 @@
                     <datalist id="customer_list"></datalist>
                     {{ render_field(form.TaxOffice) }}
                     <hr/>
-                    <button id="btnaddUser" class="btn btn-lg btn-primary btn-block" type="submit">Εισαγωγή/Ενημέρωση</button>
+                    <button id="btnaddUser" class="btn btn-lg btn-primary btn-block" type="submit">{{ _('Εισαγωγή/Ενημέρωση') }}</button>
                 </form>
             </div>
         </div>
